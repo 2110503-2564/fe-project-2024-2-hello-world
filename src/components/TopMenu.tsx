@@ -9,6 +9,7 @@ export default async function TopMenu() {
     return (
         <div className={styles.menucontainer}>
             <TopMenuItem pageRef='/booking' title='Booking'></TopMenuItem>
+            <TopMenuItem pageRef='/restaurant' title='Restaurant'></TopMenuItem>
             {
                 session? <Link href="/api/auth/signout">
                     <div className="flex items-center absolute right-0 h-full px-2 text-cyan-600 text-sm">Sign-Out of {session.user?.name}</div>
