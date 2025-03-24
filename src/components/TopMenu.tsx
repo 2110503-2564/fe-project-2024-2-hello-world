@@ -8,7 +8,6 @@ export default async function TopMenu() {
     const session = await getServerSession()
     return (
         <div className={styles.menucontainer}>
-            <TopMenuItem pageRef='/booking' title='Booking'></TopMenuItem>
             <TopMenuItem pageRef='/restaurant' title='Restaurant'></TopMenuItem>
             {
                 session? <Link href="/api/auth/signout">
