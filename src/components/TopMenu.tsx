@@ -7,10 +7,11 @@ export default async function TopMenu() {
     const session = await getServerSession();
 
     return (
-        <div className={`${styles.menucontainer} flex justify-between items-center px-6 py-4 shadow-md bg-white`}>
+        <div className={`${styles.menucontainer}`}>
             <TopMenuItem pageRef='/restaurant' title='Restaurant' />
+            <TopMenuItem pageRef='/mybooking' title='My Booking' />
 
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-6 ml-auto">
                 {session ? (
                     <Link href="/api/auth/signout">
                         <div className="text-gray-600 text-sm px-4 py-2 transition-all duration-200 hover:text-black hover:underline">
