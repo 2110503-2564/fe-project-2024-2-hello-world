@@ -1,14 +1,19 @@
 import styles from './topmenu.module.css';
 import TopMenuItem from './TopMenuItem';
 import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions';
 import Link from 'next/link';
 
 export default async function TopMenu() {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     return (
         <div className={`${styles.menucontainer} flex justify-between items-center px-6 py-4 shadow-md bg-white`}>
-            <TopMenuItem pageRef='/restaurant' title='Restaurant' />
+            <div className="flex gap-6">
+                <TopMenuItem pageRef='/restaurant' title='Restaurant' />
+                <TopMenuItem pageRef='/mybooking' title='My booking' />
+            </div>
+        
 
             {session ? (
                 <Link href="/api/auth/signout">
