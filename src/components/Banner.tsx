@@ -1,45 +1,55 @@
-'use client'
-import styles from './banner.module.css'
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+"use client";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 export default function Banner() {
-    const covers = ['/img/restaurant_home1.jpg', '/img/restaurant_home2.webp', '/img/restaurant_home3.webp'];
-    const [index, setIndex] = useState(0);
-    const router = useRouter();
-    const { data:session } = useSession();
-    console.log(session?.user.token)
+  const covers = [
+    "/img/restaurant_home1.jpg",
+    "/img/restaurant_home2.webp",
+    "/img/restaurant_home3.webp",
+  ];
+  const [index, setIndex] = useState(0);
+  const router = useRouter();
+  const { data: session } = useSession();
 
+  // Automatically change the image every 4 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prevIndex) => (prevIndex + 1) % covers.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
-    // Automatically change the image every 3 seconds
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setIndex((prevIndex) => (prevIndex + 1) % covers.length);
-        }, 4000); // Change every 3 seconds
+  return (
+    <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
+      {/* Background Image with blur effect */}
+      <div className="absolute inset-0 bg-black opacity-30"></div> {/* Dark overlay */}
+      <Image 
+        src={covers[index]} 
+        alt="cover" 
+        fill 
+        className="object-cover transition-opacity duration-700 ease-in-out blur-sm"
+      />
 
-        return () => clearInterval(interval); // Cleanup on component unmount
-    }, []);
+      {/* Banner Text with animation and styling */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 z-10">
+        <h1 className="text-5xl md:text-6xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-gray-100 to-gray-500 animate-textGlow drop-shadow-xl text-shadow-xl">
+          Reserve Your Restaurant Here
+        </h1>
+        {/* Description text */}
+        <p className="mt-4 text-lg md:text-xl text-white font-medium drop-shadow-md">
+          Book a table in a few clicks and enjoy your experience.
+        </p>
+      </div>
 
-    return (
-        <div className={styles.banner}>
-            <Image 
-                src={covers[index]} 
-                alt='cover'
-                fill={true}
-                objectFit='cover'
-            />
-
-            <div className={`${styles.bannerText} text-white`}>
-                <h1 className='text-4xl font-medium'>Reserve your restaurant here</h1>
-            </div>
-
-            {
-                session? <div className='z-30 absolute right-10 top-5 font-semibold text-xl'>Welcome {session.user?.name}</div> 
-                : null
-            }
-            
+      {/* Welcome User */}
+      {session && (
+        <div className="absolute top-5 right-10 text-white font-medium text-lg drop-shadow-md">
+          Welcome, {session.user?.name}
         </div>
-    );
+      )}
+    </div>
+  );
 }
