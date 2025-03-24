@@ -3,7 +3,7 @@ import { TextField ,Button } from "@mui/material";
 
 export default function Booking() {
   return (
-    <main className="w-full flex flex-col items-center space-y-4 pt-20">
+    <main className="w-full h-screen flex flex-col items-center justify-center space-y-4">
       <TextField 
         variant="standard" 
         name="Name-Lastname" 
@@ -22,7 +22,7 @@ export default function Booking() {
         name="Book Venue" 
         className="mt-4"
       >
-        Book Venue
+        Book Restaurant
       </Button>
     </main>
   );

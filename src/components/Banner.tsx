@@ -31,7 +31,7 @@ export default function Banner() {
                 objectFit='cover'
             />
 
-            <div className={styles.bannerText}>
+            <div className={`${styles.bannerText} text-white`}>
                 <h1 className='text-4xl font-medium'>Reserve your restaurant here</h1>
             </div>
 
