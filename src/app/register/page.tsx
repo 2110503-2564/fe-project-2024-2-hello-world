@@ -26,7 +26,7 @@ export default function RegisterPage() {
             alert("Register success! You can now log in.");
             router.push("/api/auth/signin");
         } catch (err) {
-            console.error("Register error:", err); // ✅ log error ใน console
+            console.error("Register error:", err);
             setError(err instanceof Error ? err.message : "Registration failed. Please try again.");
         }
     };
