@@ -3,34 +3,37 @@ import getRestaurant from "@/libs/getRestaurant";
 import Link from "next/link";
 
 export default async function RestaurantDetailPage({ params }: { params: { rid: string } }) {
-
-    const restaurantDetail = await getRestaurant(params.rid)
+    const restaurantDetail = await getRestaurant(params.rid);
 
     return (
-        <main className="text-center p-5 text-black">
-            <h1 className="text-lg font-medium">{restaurantDetail.data.name}</h1>
-            <div>
-                <Image src={restaurantDetail.data.picture}
-                    alt='Restaurant image'
-                    width={0} height={0} sizes="100vw"
-                    className="rounded-lg w-[30%]">
-                </Image>
-                <div className="text-md mx-5 text-left" >{restaurantDetail.data.name}
-                    <div className="text-md mx-5 text-left">Address: {restaurantDetail.data.address}</div>
-                    <div className="text-md mx-5">Phone: {restaurantDetail.data.phone}</div>
-                    <div className="text-md mx-5">Open time: {restaurantDetail.data.open_time}</div>
-                    <div className="text-md mx-5">Close time: {restaurantDetail.data.close_time}</div>
-
-                    <Link href={`/booking?id=${params.rid}&restaurant=${restaurantDetail.data.name}`}>
-                    <button className="block rounded-md bg-sky-600 hover:bg-indigo-600 px-3 py-2 shadow-m">
-                        Make Reservation
-                    </button>
-                    </Link>
-
-                    
-
+        <main className="flex flex-col items-center p-8 text-gray-900 bg-gray-100 min-h-screen">
+            <h1 className="text-2xl font-semibold mb-4 text-gray-800">{restaurantDetail.data.name}</h1>
+            <div className="flex flex-col md:flex-row bg-white shadow-lg rounded-xl overflow-hidden w-full max-w-4xl">
+                <div className="w-full md:w-1/3">
+                    <Image 
+                        src={restaurantDetail.data.picture} 
+                        alt='Restaurant image' 
+                        width={500} 
+                        height={500} 
+                        className="object-cover w-full h-full" 
+                    />
+                </div>
+                <div className="w-full md:w-2/3 p-6 flex flex-col justify-between">
+                    <div>
+                        <p className="text-lg font-medium text-gray-700">{restaurantDetail.data.name}</p>
+                        <p className="text-sm text-gray-500">{restaurantDetail.data.address}</p>
+                        <p className="text-sm text-gray-500">Phone: {restaurantDetail.data.phone}</p>
+                        <p className="text-sm text-gray-500">Open: {restaurantDetail.data.open_time} - {restaurantDetail.data.close_time}</p>
+                    </div>
+                    <div className="mt-4">
+                        <Link href={`/booking?id=${params.rid}&restaurant=${restaurantDetail.data.name}`}>
+                            <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition shadow-md">
+                                Make Reservation
+                            </button>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </main>
-    )
+    );
 }
