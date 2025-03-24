@@ -21,8 +21,8 @@ export default function RestaurantPanel() {
                 <div style={{ margin: "20px", display: "flex", flexDirection: "row", justifyContent: "space-around", alignContent: "space-around", flexWrap: "wrap", padding: "10px" }}>
                     {
                         restaurantResponse.data.map((restaurantItem:object) => (
-                            <Link href={`/venue/${restaurantItem.id}`} className="w-[100%] sm:w-[50%] md:w-[30%] lg:w-[25%] p-2 sm:p-4 md:p-4 lg:p-8">
-                                <Card venueName={restaurantItem.name} imgSrc={restaurantItem.picture}/>
+                            <Link href={`/restaurant/${restaurantItem.id}`} className="w-[100%] sm:w-[50%] md:w-[30%] lg:w-[25%] p-2 sm:p-4 md:p-4 lg:p-8">
+                                <Card restaurantName={restaurantItem.name} imgSrc={restaurantItem.picture}/>
                             </Link>
                         ))
                     }

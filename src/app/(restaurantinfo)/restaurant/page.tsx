@@ -1,9 +1,13 @@
 import RestaurantPanel from "@/components/RestaurantPanel";
+import getRestaurants from "@/libs/getRestaurants";
+import RestaurantCatalog from "@/components/RestaurantCatalog";
 
-export default function Restaurant() {
+
+export default async function Restaurant() {
+    const restaurants = await getRestaurants()
     return(
         <main className="text-center p-5">
-            <RestaurantPanel></RestaurantPanel>
+            <RestaurantCatalog restaurantJson={restaurants}></RestaurantCatalog>
         </main>
     )
 }

@@ -4,10 +4,10 @@ import * as React from 'react';
 
 
 
-export default function Card({ venueName, imgSrc}: { venueName: string, imgSrc: string}) {
+export default function Card({ restaurantName, imgSrc}: { restaurantName: string, imgSrc: string}) {
 
     return (
-        <InteractiveCard contentName={ venueName }>
+        <InteractiveCard contentName={ restaurantName }>
             <div className='w-full h-[70%] relative rounded-t-lg'>
                 <Image src={imgSrc}
                     alt='Product Picture'
@@ -15,7 +15,7 @@ export default function Card({ venueName, imgSrc}: { venueName: string, imgSrc: 
                     className='object-cover rounded-t-lg' />
             </div>
             <div className='w-full h-[15%] p-[10px] text-black'>
-                {venueName}
+                {restaurantName}
             </div>
         </InteractiveCard>
 
