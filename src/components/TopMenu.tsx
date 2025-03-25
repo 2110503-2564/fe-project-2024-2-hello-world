@@ -2,11 +2,11 @@
 
 import styles from './topmenu.module.css';
 import TopMenuItem from './TopMenuItem';
-import { useSession } from 'next-auth/react'; // Use the client-side session hook
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 
 export default function TopMenu() {
-    const { data: session, status } = useSession(); // Get session data and status
+    const { data: session, status } = useSession();
 
     return (
         <div className={`${styles.menucontainer} flex justify-between items-center px-6 py-4 shadow-md bg-white`}>
@@ -15,17 +15,19 @@ export default function TopMenu() {
                 <TopMenuItem pageRef='/restaurant' title='Restaurant' />
                 <TopMenuItem pageRef='/mybooking' title='My booking' />
             </div>
-            <Link href="/Profile">
+            {session ? (
+                <div className="flex gap-6 items-center">
+                    <Link href="/Profile">
                         <div className="text-gray-600 text-sm px-4 py-2 transition-all duration-200 hover:text-black hover:underline">
                             Profile
                         </div>
                     </Link>
-            {session ? (
-                <Link href="/api/auth/signout">
-                    <div className="text-gray-600 text-sm px-4 py-2 transition-all duration-200 hover:text-black hover:underline">
-                        Sign-Out of {session.user?.name}
-                    </div>
-                </Link>
+                    <Link href="/api/auth/signout">
+                        <div className="text-gray-600 text-sm px-4 py-2 transition-all duration-200 hover:text-black hover:underline">
+                            Sign-Out of {session.user?.name}
+                        </div>
+                    </Link>
+                </div>
             ) : status === 'loading' ? (
                 <div className="text-gray-600 text-sm px-4 py-2">
                     Loading...
