@@ -1,4 +1,3 @@
-import RestaurantPanel from "@/components/RestaurantPanel";
 import getRestaurants from "@/libs/getRestaurants";
 import RestaurantCatalog from "@/components/RestaurantCatalog";
 

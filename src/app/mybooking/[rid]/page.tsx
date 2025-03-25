@@ -6,19 +6,24 @@ import { Dayjs } from "dayjs";
 import editBooking from "@/libs/editBooking";
 import { Button, TextField, Typography, Box, Snackbar, Alert } from "@mui/material";
 import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 
 export default function EditBooking({
     params,
-    restaurantId, // Pass the restaurantId as a prop
   }: {
     params: { rid: string };
-    restaurantId: string; // Declare the restaurantId type here
   }) {
     const [bookDateTime, setBookDateTime] = useState<Dayjs | null>(null);
     const [successMessage, setSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
     const { data: session } = useSession();
+    const searchParams = useSearchParams()
+    const restaurantId = searchParams.get('restaurantId')
+
+    if (!restaurantId) {
+        return null
+      }
   
     const handleSaveChanges = async () => {
       if (!bookDateTime) {
@@ -29,6 +34,8 @@ export default function EditBooking({
       const token = session?.user?.token || "user_token_here";
       const reservationId = params.rid;
       const reserveDate = bookDateTime.toISOString();
+
+
   
       try {
         const updatedBooking = await editBooking(token, reservationId, reserveDate, restaurantId); // Pass restaurantId here

@@ -3,7 +3,7 @@ import Card from "./Card";
 import { RestaurantJson } from "../../interface";
 import { RestaurantItem } from "../../interface";
 
-export default async function RestaurantCatalog({ restaurantJson }: { restaurantJson: Object }) {
+export default async function RestaurantCatalog({ restaurantJson }: { restaurantJson: RestaurantJson }) {
     const restaurantJsonReady = await restaurantJson;
 
     return (
