@@ -1,28 +1,35 @@
 'use client';
 
-import { Dayjs } from "dayjs";
 
-export interface VenueItem {
-    _id: string,
-    name: string,
-    address: string,
-    district: string,
-    province: string,
-    postalcode: string,
-    tel: string,
-    picture: string,
-    dailyrate: number,
-    __v: number,
-    id: string
-  }
-  
-export interface VenueJson {
-    success: boolean,
-    count: number,
-    pagination: Object,
-    data: VenueItem[]
-  }
 
 export interface BookingItem {
-    bookDateTime: string;
-  }
+  _id: string;
+  reserveDate: string;
+  restaurant: Restaurant | null;
+  user: {  // Define 'user' as an object
+    _id: string;
+    name: string;
+    email: string;
+  };
+}
+
+export interface Restaurant {
+  _id:string,
+  name:string,
+  address:string,
+  phone:string,
+  open_time:string,
+  close_time:string,
+  picture:string,
+}
+
+export interface RestaurantItem {
+  id: string;
+  name: string;
+  picture: string;
+}
+
+export interface RestaurantJson {
+  count: number;
+  data: RestaurantItem[];
+}

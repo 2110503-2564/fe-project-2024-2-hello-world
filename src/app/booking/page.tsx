@@ -11,6 +11,7 @@ import { useSearchParams } from "next/navigation";
 import { CalendarMonth, Restaurant } from "@mui/icons-material";
 import { useSession } from "next-auth/react";
 import getUserProfile from "@/libs/getUserProfile";
+import getBookings from "@/libs/getBookings";
 
 export default function Booking() {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,6 +24,7 @@ export default function Booking() {
   const [successMessage, setSuccessMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [profile, setProfile] = useState<any>(null);
+  const [bookings, setBookings] = useState<any>(null);
 
   // Use useSession hook for client-side session management
   const { data: session, status } = useSession(); 
@@ -36,6 +38,16 @@ export default function Booking() {
       fetchProfile();
     }
   }, [session]);
+
+  useEffect(() => {
+    if (session?.user?.token) {
+      const fetchBooking = async () => {
+        const userBookings = await getBookings(session.user.token);
+        setBookings(userBookings); // Store fetched bookings
+      };
+      fetchBooking();
+    }
+  }, []);
 
   useEffect(() => {
     if (restaurantId) {
@@ -58,6 +70,13 @@ export default function Booking() {
       setErrorMessage("You must be logged in to book.");
       return;
     }
+
+    if (profile.data.role !== "admin" && bookings.count >= 3) {
+      setErrorMessage("You can only have up to 3 active reservations.");
+      return;
+    }
+
+
   
     const isoDate = bookDateTime.toISOString(); // Only call toISOString if it's a valid Dayjs object
   
@@ -75,10 +94,13 @@ export default function Booking() {
           reserveDate: isoDate, // Send ISO string
         })
       )
+      const updatedBookings = await getBookings(session.user.token);
+      setBookings(updatedBookings);
   
       setSuccessMessage(true);
     } catch (error: any) {
       console.error("❌ Booking error:", error.message);
+      setSuccessMessage(false);
       setErrorMessage(error.message || "Failed to make reservation");
     }
   }; 

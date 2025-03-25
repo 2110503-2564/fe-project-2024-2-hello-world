@@ -4,6 +4,7 @@ import { removeBooking } from "@/redux/features/bookSlice";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { fetchBookings } from "@/redux/features/bookSlice";
+import { Restaurant } from "../../interface";
 
 const BookingList = () => {
     const bookItems = useAppSelector((state) => state.bookSlice.bookItems);
@@ -94,7 +95,7 @@ const BookingList = () => {
                         <div className="text-lg font-medium text-gray-800">
                             {bookItem.user ? (
                                 <>
-                                    <p>Reserved By: {bookItem.user}</p>
+                                    <p>Reserved By: {bookItem.user.name}</p>
                                 </>
                             ) : (
                                 'null'
@@ -117,12 +118,21 @@ const BookingList = () => {
                             )}
                         </div>
 
-                        <button
-                            className="mt-3 w-full rounded-lg bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 px-4 py-2 text-white font-semibold shadow-md transition-all duration-300"
-                            onClick={() => handleRemoveBooking(bookItem._id)}
-                        >
-                            Remove from Booking
-                        </button>
+                        <div className="flex flex-row gap-3">
+                            <button
+                                className="mt-3 w-full rounded-lg bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 px-4 py-2 text-white font-semibold shadow-md transition-all duration-300"
+                                onClick={() => handleRemoveBooking(bookItem._id)}
+                            >
+                                Remove from Booking
+                            </button>
+        
+
+                            <Link className="w-full" href={`/mybooking/${bookItem._id}?restaurantId=${bookItem.restaurant?._id}`} passHref>
+                                <button className="mt-3 w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 px-4 py-2 text-white font-semibold shadow-md transition-all duration-300">Edit Booking</button>
+                            </Link>
+
+                        </div>
+
                     </div>
                 ))
             )}

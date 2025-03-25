@@ -3,6 +3,7 @@ import { BookingItem } from "../../../interface";
 import getBookings from "@/libs/getBookings";
 import deleteBooking from "@/libs/deleteBooking";
 import addBooking from "@/libs/addBooking";
+
 // Define your state structure
 type BookState = {
     bookItems: BookingItem[];
@@ -87,7 +88,7 @@ export const bookSlice = createSlice({
             const newBookItem = action.payload;
             let found = false;
             state.bookItems.forEach((bookItem) => {
-                if (bookItem.reserveDate === newBookItem.reserveDate && bookItem.restaurant.name === newBookItem.restaurant.name) {
+                if (bookItem.reserveDate === newBookItem.reserveDate && bookItem.restaurant?.name === newBookItem.restaurant?.name) {
                     found = true;
                 }
             });

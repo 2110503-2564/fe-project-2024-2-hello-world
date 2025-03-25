@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Card from "./Card";
+import { RestaurantJson } from "../../interface";
+import { RestaurantItem } from "../../interface";
 
 export default async function RestaurantCatalog({ restaurantJson }: { restaurantJson: Object }) {
     const restaurantJsonReady = await restaurantJson;
