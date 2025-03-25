@@ -1,60 +1,114 @@
 'use client'
 import DateReserve from "@/components/DateReserve";
+import { useEffect, useState } from "react";
 import { Button, Snackbar, Alert } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { useDispatch } from "react-redux";
-import { useState } from "react";
 import { BookingItem } from "../../../interface";
 import { AppDispatch } from "@/redux/store";
-import { addBooking } from "@/redux/features/bookSlice";
-import { useSearchParams } from "next/navigation";
+import { addBookingAsync } from "@/redux/features/bookSlice";
+import { useSearchParams } from "next/navigation"; 
 import { CalendarMonth, Restaurant } from "@mui/icons-material";
+import { useSession } from "next-auth/react";
+import getUserProfile from "@/libs/getUserProfile";
 
 export default function Booking() {
   const dispatch = useDispatch<AppDispatch>();
   const searchParams = useSearchParams();
+  const restaurantId = searchParams.get("id");
   const restaurantName = searchParams.get("restaurant");
-  
-  const [rest, setRest] = useState<string | null>(restaurantName);
-  const [bookDate, setBookDate] = useState<Dayjs | null>(null);
-  const [successMessage, setSuccessMessage] = useState(false);
 
-  const makeReservation = () => {
-    if (rest && bookDate) {
-      const item: BookingItem = {
-        rest: rest,
-        bookDate: dayjs(bookDate).format("YYYY/MM/DD"),
+  const [rest, setRest] = useState<string | null>(restaurantId);
+  const [bookDateTime, setBookDateTime] = useState<Dayjs | null>(null);
+  const [successMessage, setSuccessMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [profile, setProfile] = useState<any>(null);
+
+  // Use useSession hook for client-side session management
+  const { data: session, status } = useSession(); 
+
+  useEffect(() => {
+    if (session?.user?.token) {
+      const fetchProfile = async () => {
+        const userProfile = await getUserProfile(session.user.token);
+        setProfile(userProfile);
       };
-      console.log("Booking Item:", item);
-      dispatch(addBooking(item));
-      setSuccessMessage(true);
+      fetchProfile();
     }
-  };
+  }, [session]);
+
+  useEffect(() => {
+    if (restaurantId) {
+      setRest(restaurantId);
+    }
+  }, [restaurantId]);
+
+  const makeReservation = async () => {
+    if (!rest) {
+      setErrorMessage("Restaurant ID is missing!");
+      return;
+    }
+  
+    if (!bookDateTime || !(bookDateTime instanceof dayjs)) {
+      setErrorMessage("Please select a valid reservation date and time.");
+      return;
+    }
+  
+    if (!session?.user?.token) {
+      setErrorMessage("You must be logged in to book.");
+      return;
+    }
+  
+    const isoDate = bookDateTime.toISOString(); // Only call toISOString if it's a valid Dayjs object
+  
+    try {
+      console.log("📤 Sending reservation request:", {
+        token: session.user.token,
+        restaurantId: rest,
+        reserveDate: isoDate,
+      });
+  
+      await dispatch(
+        addBookingAsync({
+          token: session.user.token,
+          restaurantId: rest,
+          reserveDate: isoDate, // Send ISO string
+        })
+      )
+  
+      setSuccessMessage(true);
+    } catch (error: any) {
+      console.error("❌ Booking error:", error.message);
+      setErrorMessage(error.message || "Failed to make reservation");
+    }
+  }; 
 
   return (
-    <main className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-300">
-      <div className="bg-white shadow-xl rounded-2xl p-6 w-[350px] text-center">
-        <h1 className="text-xl font-semibold text-gray-800 flex items-center justify-center space-x-2">
-          <Restaurant className="text-indigo-600" /> 
-          <span>{rest}</span>
+    <main className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="bg-white shadow-xl rounded-lg p-8 w-[320px] text-center border border-gray-100">
+        <h1 className="text-xl font-semibold text-gray-900 flex items-center justify-center space-x-2 mb-4">
+          <Restaurant className="text-indigo-600" />
+          <span className="text-gray-700">{restaurantName}</span>
         </h1>
-        
-        <div className="mt-4 flex flex-col space-y-2 text-left">
+
+        <div className="mt-4 flex flex-col space-y-4 text-left mb-5">
           <span className="text-gray-600 flex items-center space-x-2">
             <CalendarMonth className="text-indigo-600" />
-            <span>Select Date</span>
+            <span>Select Date and Time</span>
           </span>
-          <DateReserve onDateChange={(value: Dayjs) => setBookDate(value)} />
+          <DateReserve onDateChange={(value: Dayjs) => setBookDateTime(value)} />
         </div>
 
         <Button 
           variant="contained" 
           sx={{ 
-            backgroundColor: "black", 
-            "&:hover": { backgroundColor: "gray.800" } 
+            backgroundColor: "#333", 
+            color: "#fff", 
+            "&:hover": { backgroundColor: "#555" } 
           }}
           fullWidth
           onClick={makeReservation}
+          className="mt-12"
         >
           Book Reservation
         </Button>
@@ -65,7 +119,17 @@ export default function Booking() {
           onClose={() => setSuccessMessage(false)}
         >
           <Alert severity="success" onClose={() => setSuccessMessage(false)}>
-            Success!
+            Reservation Successful!
+          </Alert>
+        </Snackbar>
+
+        <Snackbar
+          open={!!errorMessage}
+          autoHideDuration={3000}
+          onClose={() => setErrorMessage(null)}
+        >
+          <Alert severity="error" onClose={() => setErrorMessage(null)}>
+            {errorMessage}
           </Alert>
         </Snackbar>
       </div>

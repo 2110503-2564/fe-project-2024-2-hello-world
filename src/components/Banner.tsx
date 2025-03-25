@@ -22,7 +22,7 @@ export default function Banner() {
   }, []);
 
   return (
-    <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden flex flex-col items-center justify-center text-center px-6">
+    <div className="relative w-full h-[95vh] overflow-hidden flex flex-col items-center justify-center text-center px-6">
       <div className="absolute inset-0 bg-black opacity-30"></div>
       <Image
         src={covers[index]}
@@ -56,7 +56,7 @@ export default function Banner() {
       </div>
 
       {session && (
-        <div className="absolute top-5 right-10 text-white font-medium text-lg drop-shadow-md">
+        <div className="absolute top-5 right-10 text-white font-medium text-lg drop-shadow-md mt-2">
           Welcome, {session.user?.name}
         </div>
       )}

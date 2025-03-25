@@ -1,5 +1,7 @@
 'use client';
 
+import { Dayjs } from "dayjs";
+
 export interface VenueItem {
     _id: string,
     name: string,
@@ -22,6 +24,5 @@ export interface VenueJson {
   }
 
 export interface BookingItem {
-    rest: string;
-    bookDate: string;
+    bookDateTime: string;
   }

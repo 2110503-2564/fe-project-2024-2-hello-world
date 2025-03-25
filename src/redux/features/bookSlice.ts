@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { BookingItem } from "../../../interface";
 import getBookings from "@/libs/getBookings";
 import deleteBooking from "@/libs/deleteBooking";
-
+import addBooking from "@/libs/addBooking";
 // Define your state structure
 type BookState = {
     bookItems: BookingItem[];
@@ -44,24 +44,50 @@ export const removeBooking = createAsyncThunk(
             const response = await deleteBooking(token, bookingId); // Delete from backend
             console.log("Delete response:", response); // Add logging to inspect the response
 
-
             return bookingId; // Return the booking ID to update Redux state
         } catch (error: any) {
             return rejectWithValue(error.message || "Failed to remove booking");
         }
     }
 );
+
+export interface AddBookingPayload {
+    token: string;
+    restaurantId: string;
+    reserveDate: string;
+  }
+  
+  // Update the async action to accept reserveDate
+  export const addBookingAsync = createAsyncThunk(
+    "booking/addBooking",
+    async ({ token, restaurantId, reserveDate }: AddBookingPayload) => {
+      const requestBody = {
+        reserveDate: reserveDate,
+      };
+  
+      console.log("Sending reservation request:", requestBody); // 🔥 Debugging log
+  
+      const response = await addBooking(token, restaurantId, reserveDate)
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Reservation request failed:", errorText); 
+      }
+  
+      return await response.json();
+    }
+  );
+
 // Create slice
 export const bookSlice = createSlice({
     name: "booking",
     initialState,
     reducers: {
-        addBooking: (state, action: PayloadAction<BookingItem>) => {
-            const bookItems = state.bookItems;
+        addBookingToState: (state, action: PayloadAction<BookingItem>) => {
             const newBookItem = action.payload;
             let found = false;
-            bookItems.forEach((bookItem) => {
-                if (bookItem.bookDate === newBookItem.bookDate && bookItem.rest === newBookItem.rest) {
+            state.bookItems.forEach((bookItem) => {
+                if (bookItem.reserveDate === newBookItem.reserveDate && bookItem.restaurant.name === newBookItem.restaurant.name) {
                     found = true;
                 }
             });
@@ -92,8 +118,16 @@ export const bookSlice = createSlice({
         })
         .addCase(removeBooking.rejected, (state, action) => {
             state.error = action.payload as string;
+        })
+        .addCase(addBookingAsync.fulfilled, (state, action) => {
+            // The booking was successfully added via the API, update state
+            state.bookItems.push(action.payload); // Assuming response contains the new booking data
+        })
+        .addCase(addBookingAsync.rejected, (state, action) => {
+            state.error = action.payload as string;
         });
     },
 });
-export const { addBooking} = bookSlice.actions;
+
+export const { addBookingToState } = bookSlice.actions;
 export default bookSlice.reducer;
