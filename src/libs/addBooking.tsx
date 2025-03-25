@@ -1,6 +1,6 @@
 export default async function addBooking(token:string, restaurantId:string, reserveDate:string) {
  
-    const response = await fetch(`http://localhost:5003/api/restaurants/${restaurantId}/reservations`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurants/${restaurantId}/reservations`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${token}`,

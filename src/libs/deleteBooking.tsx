@@ -4,7 +4,7 @@ export default async function deleteBooking(token:string, bookingId:string) {
         throw new Error("Invalid booking ID ");
     }
  
-    const response = await fetch(`http://localhost:5003/api/reservations/${bookingId}`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/reservations/${bookingId}`, {
         method: "DELETE",
         headers: {
             "Authorization": `Bearer ${token}`,

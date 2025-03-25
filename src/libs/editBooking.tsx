@@ -1,6 +1,6 @@
 export default async function editBooking(token:string, reservationId:string, reserveDate:string, restaurantId:string) {
  
-    const response = await fetch(`http://localhost:5003/api/reservations/${reservationId}`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/reservations/${reservationId}`, {
         method: "PUT",
         headers: {
             "Authorization": `Bearer ${token}`,
