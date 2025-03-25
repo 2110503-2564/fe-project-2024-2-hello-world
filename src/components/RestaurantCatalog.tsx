@@ -1,25 +1,21 @@
 import Link from "next/link";
 import Card from "./Card";
 
-export default async function RestaurantCatalog({ restaurantJson }: { restaurantJson: Object }) {
-    const restaurantJsonReady = await restaurantJson;
-
+export default async function RestaurantCatalog({ restaurantJson }: {restaurantJson:Object}) {
+    const restaurantJsonReady = await restaurantJson
     return (
         <>
-            <div className="text-black text-xl font-semibold mb-5 py-5">
-                Explore {restaurantJsonReady.count} restaurants in our catalog
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-6 px-4 py-5">
+        <div className="text-black">Explore { restaurantJson.count } restaurants in our catalog</div>
+        <div style={{ margin: "20px", display: "flex", flexDirection: "row", justifyContent: "space-around", alignContent: "space-around", flexWrap: "wrap", padding: "10px" }}>
                 {
-                    restaurantJsonReady.data.map((restaurantItem: any) => (
-                        <Link href={`/restaurant/${restaurantItem.id}`} key={restaurantItem.id}>
-                            <div className="w-full">
-                                <Card restaurantName={restaurantItem.name} imgSrc={restaurantItem.picture} />
-                            </div>
+                    restaurantJsonReady.data.map((restaurantItem:object) => (
+                        <Link href={`/restaurant/${restaurantItem.id}`} className="w-1/5">
+                            <Card restaurantName={restaurantItem.name} imgSrc={restaurantItem.picture}/>
                         </Link>
                     ))
                 }
-            </div>
+
+        </div>
         </>
-    );
+    )
 }

@@ -1,52 +1,73 @@
-"use client";
+'use client'
 import DateReserve from "@/components/DateReserve";
-import { TextField, Button } from "@mui/material";
+import { Button, Snackbar, Alert } from "@mui/material";
+import dayjs, { Dayjs } from "dayjs";
+import { useDispatch } from "react-redux";
 import { useState } from "react";
+import { BookingItem } from "../../../interface";
+import { AppDispatch } from "@/redux/store";
+import { addBooking } from "@/redux/features/bookSlice";
+import { useSearchParams } from "next/navigation";
+import { CalendarMonth, Restaurant } from "@mui/icons-material";
 
 export default function Booking() {
-  const [name, setName] = useState("");
-  const [contact, setContact] = useState("");
+  const dispatch = useDispatch<AppDispatch>();
+  const searchParams = useSearchParams();
+  const restaurantName = searchParams.get("restaurant");
+  
+  const [rest, setRest] = useState<string | null>(restaurantName);
+  const [bookDate, setBookDate] = useState<Dayjs | null>(null);
+  const [successMessage, setSuccessMessage] = useState(false);
+
+  const makeReservation = () => {
+    if (rest && bookDate) {
+      const item: BookingItem = {
+        rest: rest,
+        bookDate: dayjs(bookDate).format("YYYY/MM/DD"),
+      };
+      console.log("Booking Item:", item);
+      dispatch(addBooking(item));
+      setSuccessMessage(true);
+    }
+  };
 
   return (
-    <main className="w-full h-screen flex flex-col items-center justify-center space-y-6 bg-gray-50">
-      <h1 className="text-3xl font-semibold text-gray-900">Book a Table here</h1>
-
-      <div className="w-[90%] max-w-[400px]">
-        {/* Name and Lastname Input */}
-        <TextField
-          variant="outlined"
-          name="Name-Lastname"
-          label="Name - Lastname"
-          className="w-full mb-4"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          fullWidth
-        />
-
-        {/* Contact Number Input */}
-        <TextField
-          variant="outlined"
-          name="Contact-Number"
-          label="Contact Number"
-          className="w-full mb-4"
-          value={contact}
-          onChange={(e) => setContact(e.target.value)}
-          fullWidth
-        />
+    <main className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-300">
+      <div className="bg-white shadow-xl rounded-2xl p-6 w-[350px] text-center">
+        <h1 className="text-xl font-semibold text-gray-800 flex items-center justify-center space-x-2">
+          <Restaurant className="text-indigo-600" /> 
+          <span>{rest}</span>
+        </h1>
         
-        {/* Date Reserve with Full Width */}
-        <div className="w-full item-center">
-          <DateReserve />
+        <div className="mt-4 flex flex-col space-y-2 text-left">
+          <span className="text-gray-600 flex items-center space-x-2">
+            <CalendarMonth className="text-indigo-600" />
+            <span>Select Date</span>
+          </span>
+          <DateReserve onDateChange={(value: Dayjs) => setBookDate(value)} />
         </div>
 
-        {/* Book Button */}
         <Button 
           variant="contained" 
-          className="w-full py-2 mt-4 text-white bg-sky-600 hover:bg-sky-700 transition-all"
-          onClick={() => console.log("Booking Confirmed")}
+          sx={{ 
+            backgroundColor: "black", 
+            "&:hover": { backgroundColor: "gray.800" } 
+          }}
+          fullWidth
+          onClick={makeReservation}
         >
-          Book Restaurant
+          Book Reservation
         </Button>
+
+        <Snackbar
+          open={successMessage}
+          autoHideDuration={3000}
+          onClose={() => setSuccessMessage(false)}
+        >
+          <Alert severity="success" onClose={() => setSuccessMessage(false)}>
+            Success!
+          </Alert>
+        </Snackbar>
       </div>
     </main>
   );
