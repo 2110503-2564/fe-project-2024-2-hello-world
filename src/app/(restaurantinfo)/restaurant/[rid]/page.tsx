@@ -7,7 +7,7 @@ export default async function RestaurantDetailPage({ params }: { params: { rid: 
     const restaurantDetail = await getRestaurant(params.rid);
 
     return (
-        <main className="text-black bg-gray-50 min-h-screen flex flex-col items-center justify-center py-10">
+        <main className="text-black bg-gray-50 h-[100vh] flex flex-col items-center justify-center py-10">
             {/* Restaurant Name */}
             <h1 className="text-3xl font-semibold text-gray-800 mb-6">{restaurantDetail.data.name}</h1>
             
@@ -25,13 +25,13 @@ export default async function RestaurantDetailPage({ params }: { params: { rid: 
             
             {/* Restaurant Info */}
             <div className="w-full md:w-[60%] p-4 bg-white rounded-lg shadow-lg space-y-4">
-                <div className="text-lg text-gray-600 font-medium">Address: <div>{restaurantDetail.data.address}</div></div>
+                <div className="text-md text-gray-600 font-medium">Address: <div>{restaurantDetail.data.address}</div></div>
                 
-                <div className="text-lg text-gray-600 font-medium">Phone: <div>{restaurantDetail.data.phone}</div></div>
+                <div className="text-md text-gray-600 font-medium">Phone: <div>{restaurantDetail.data.phone}</div></div>
 
-                <div className="text-lg text-gray-600 font-medium">Open Time: <div>{restaurantDetail.data.open_time}</div></div>
+                <div className="text-md text-gray-600 font-medium">Open Time: <div>{restaurantDetail.data.open_time}</div></div>
 
-                <div className="text-lg text-gray-600 font-medium">Close Time: <div>{restaurantDetail.data.close_time}</div></div>
+                <div className="text-md text-gray-600 font-medium">Close Time: <div>{restaurantDetail.data.close_time}</div></div>
             </div>
             
             {/* Make Reservation Button */}

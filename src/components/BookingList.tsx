@@ -108,7 +108,7 @@ const BookingList = () => {
                         <div className="text-lg font-medium text-gray-800">
                             {bookItem.restaurant ? (
                                 <>
-                                    <p>Name: {bookItem.restaurant.name}</p>
+                                    <p>Restaurant Name: {bookItem.restaurant.name}</p>
                                     <p>Address: {bookItem.restaurant.address}</p>
                                     <p>Phone: {bookItem.restaurant.phone}</p>
                                 </>

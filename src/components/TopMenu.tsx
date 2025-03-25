@@ -9,7 +9,8 @@ export default async function TopMenu() {
 
     return (
         <div className={`${styles.menucontainer} flex justify-between items-center px-6 py-4 shadow-md bg-white`}>
-            <div className="flex gap-6">
+            <div className="flex gap-2">
+                <TopMenuItem pageRef='/' title='Home' />
                 <TopMenuItem pageRef='/restaurant' title='Restaurant' />
                 <TopMenuItem pageRef='/mybooking' title='My booking' />
             </div>
