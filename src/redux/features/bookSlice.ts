@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { BookingItem } from "../../../interface";
 import getBookings from "@/libs/getBookings";
+import deleteBooking from "@/libs/deleteBooking";
 
 // Define your state structure
 type BookState = {
@@ -35,6 +36,21 @@ export const fetchBookings = createAsyncThunk(
         }
     }
 );
+
+export const removeBooking = createAsyncThunk(
+    "booking/removeBooking",
+    async ({ token, bookingId }: { token: string; bookingId: string }, { rejectWithValue }) => {
+        try {
+            const response = await deleteBooking(token, bookingId); // Delete from backend
+            console.log("Delete response:", response); // Add logging to inspect the response
+
+
+            return bookingId; // Return the booking ID to update Redux state
+        } catch (error: any) {
+            return rejectWithValue(error.message || "Failed to remove booking");
+        }
+    }
+);
 // Create slice
 export const bookSlice = createSlice({
     name: "booking",
@@ -53,29 +69,31 @@ export const bookSlice = createSlice({
                 state.bookItems.push(newBookItem);
             }
         },
-        removeBooking: (state, action: PayloadAction<BookingItem>) => {
-            const remainItem = state.bookItems.filter((obj) => {
-                return obj.rest !== action.payload.rest || obj.bookDate !== action.payload.bookDate;
-            });
-            state.bookItems = remainItem;
-        },
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchBookings.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(fetchBookings.fulfilled, (state, action) => {
-                state.loading = false;
-                state.bookItems = action.payload; // Assuming payload contains the list of bookings
-            })
-            .addCase(fetchBookings.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload as string;
-            });
+        .addCase(fetchBookings.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(fetchBookings.fulfilled, (state, action) => {
+            state.loading = false;
+            state.bookItems = action.payload; // Assuming payload contains the list of bookings
+        })
+        .addCase(fetchBookings.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string;
+        })
+        .addCase(removeBooking.fulfilled, (state, action) => {
+            // Ensure action.payload contains the bookingId
+            state.bookItems = state.bookItems.filter(
+                (bookItem) => bookItem._id !== action.payload // Use _id or the correct field
+            );
+        })
+        .addCase(removeBooking.rejected, (state, action) => {
+            state.error = action.payload as string;
+        });
     },
 });
-
-export const { addBooking, removeBooking } = bookSlice.actions;
+export const { addBooking} = bookSlice.actions;
 export default bookSlice.reducer;

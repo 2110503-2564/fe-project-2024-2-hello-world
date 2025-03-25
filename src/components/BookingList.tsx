@@ -1,4 +1,3 @@
-'use client'
 import { AppDispatch, useAppSelector } from "@/redux/store";
 import { useDispatch } from "react-redux";
 import { removeBooking } from "@/redux/features/bookSlice";
@@ -16,7 +15,6 @@ const BookingList = () => {
     useEffect(() => {
         const fetchSessionAndBookings = async () => {
             try {
-                // Fetch session data
                 const res = await fetch("/api/auth/session");
                 if (!res.ok) {
                     throw new Error("Failed to fetch session");
@@ -24,9 +22,8 @@ const BookingList = () => {
                 const sessionData = await res.json();
                 setSession(sessionData);
 
-                // If session is available and user has a token, fetch bookings
                 if (sessionData?.user?.token) {
-                    dispatch(fetchBookings(sessionData.user.token)); // Dispatch action to fetch bookings
+                    dispatch(fetchBookings(sessionData.user.token));
                 }
             } catch (error) {
                 console.error("Error:", error);
@@ -34,12 +31,19 @@ const BookingList = () => {
         };
 
         fetchSessionAndBookings();
-    }, [dispatch]); // Re-run this effect when dispatch or session changes
+    }, [dispatch]);
 
-    // Log bookItems to check its format
-    useEffect(() => {
-        console.log("bookItems:", bookItems); // Log bookItems for debugging
-    }, [bookItems]);
+    const handleRemoveBooking = (bookingId: string) => {
+        // Remove the booking and alert once it's removed
+        const token = session?.user?.token;
+        if (token) {
+            dispatch(removeBooking({ token, bookingId })).then((action) => {
+                if (action.type.endsWith('fulfilled')) {
+                    alert('Booking removed successfully');
+                }
+            });
+        }
+    };
 
     if (loading) {
         return (
@@ -71,10 +75,10 @@ const BookingList = () => {
         );
     }
 
-    // Check if bookItems is an array before calling .map
     if (!Array.isArray(bookItems)) {
         return <div>Error: Bookings are not in the correct format</div>;
     }
+
     return (
         <div className="text-gray-900 px-6 py-4">
             {bookItems.length === 0 ? (
@@ -86,7 +90,7 @@ const BookingList = () => {
                     <div
                         key={`${bookItem.reserveDate}-${bookItem.restaurant ? bookItem.restaurant._id : 'No restaurant'}`}
                         className="bg-white shadow-lg rounded-xl px-6 py-4 my-3 border border-gray-200"
-                    >   
+                    >
                         <div className="text-lg font-medium text-gray-800">
                             {bookItem.user ? (
                                 <>
@@ -96,12 +100,11 @@ const BookingList = () => {
                                 'null'
                             )}
                         </div>
-                        {/* Display reserveDate in a readable format */}
+
                         <div className="text-lg font-medium text-gray-800">
-                            Date: {new Date(bookItem.reserveDate).toLocaleString()} {/* Convert reserveDate to local time */}
+                            Date: {new Date(bookItem.reserveDate).toLocaleString()}
                         </div>
-    
-                        {/* Display restaurant details or fallback message */}
+
                         <div className="text-lg font-medium text-gray-800">
                             {bookItem.restaurant ? (
                                 <>
@@ -113,10 +116,10 @@ const BookingList = () => {
                                 'No restaurant specified'
                             )}
                         </div>
-    
+
                         <button
                             className="mt-3 w-full rounded-lg bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 px-4 py-2 text-white font-semibold shadow-md transition-all duration-300"
-                            onClick={() => dispatch(removeBooking(bookItem))}
+                            onClick={() => handleRemoveBooking(bookItem._id)}
                         >
                             Remove from Booking
                         </button>
