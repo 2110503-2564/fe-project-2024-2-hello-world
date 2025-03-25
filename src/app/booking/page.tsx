@@ -118,7 +118,7 @@ export default function Booking() {
             <CalendarMonth className="text-indigo-600" />
             <span>Select Date and Time</span>
           </span>
-          <DateReserve onDateChange={(value: Dayjs) => setBookDateTime(value)} />
+          <DateReserve onDateChange={(value: Dayjs | null) => setBookDateTime(value)} />
         </div>
 
         <Button 

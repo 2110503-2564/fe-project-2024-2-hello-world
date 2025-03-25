@@ -76,7 +76,7 @@ export default function EditBooking({
           </Typography>
           
           <div className="w-full items-center">
-            <DateReserve onDateChange={(value: Dayjs) => setBookDateTime(value)} />
+            <DateReserve onDateChange={(value: Dayjs | null) => setBookDateTime(value)} />
           </div>
           
   

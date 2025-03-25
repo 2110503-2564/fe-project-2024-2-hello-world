@@ -1,29 +1,48 @@
 "use client"
-import { DateTimePicker } from "@mui/x-date-pickers";
-import { DatePicker } from "@mui/x-date-pickers";
+import { MobileDateTimePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useState } from "react";
+import { TextField } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import { MobileDateTimePicker } from "@mui/x-date-pickers"; // Correct import for mobile variant
 
-const DateReserve = ({ onDateChange }: { onDateChange: Function }) => {
-    const [reserveDate, setReserveDate] = useState<Dayjs | null>(null);
-
-    return (
-        <div className="w-full bg-slate-100 rounded-lg space-x-5 space-y-2 px-10 py-5 flex flex-row justify-center">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <MobileDateTimePicker // Mobile variant of DateTimePicker
-                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-all duration-300"
-                    value={reserveDate}
-                    onChange={(value) => { 
-                        setReserveDate(value); 
-                        onDateChange(value); 
-                    }}
-                />
-            </LocalizationProvider>
-        </div>
-    );
+interface DateReserveProps {
+  onDateChange: (value: Dayjs | null) => void;
+  initialDate?: Dayjs | null;
 }
+
+const DateReserve = ({ onDateChange, initialDate = null }: DateReserveProps) => {
+  const [reserveDate, setReserveDate] = useState<Dayjs | null>(initialDate);
+
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <MobileDateTimePicker
+        value={reserveDate}
+        onChange={(value) => {
+          setReserveDate(value);
+          onDateChange(value);
+        }}
+        minDateTime={dayjs().add(1, 'hour')}
+        maxDateTime={dayjs().add(3, 'month')}
+        disablePast
+        slotProps={{
+          textField: {
+            fullWidth: true,
+            sx: {
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': { borderColor: 'rgba(0, 0, 0, 0.23)' },
+                '&:hover fieldset': { borderColor: '#4e6bff' },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#4e6bff',
+                  borderWidth: '1px'
+                }
+              }
+            }
+          }
+        }}
+      />
+    </LocalizationProvider>
+  );
+};
 
 export default DateReserve;
