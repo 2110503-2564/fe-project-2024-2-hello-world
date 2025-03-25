@@ -15,7 +15,11 @@ export default function TopMenu() {
                 <TopMenuItem pageRef='/restaurant' title='Restaurant' />
                 <TopMenuItem pageRef='/mybooking' title='My booking' />
             </div>
-        
+            <Link href="/Profile">
+                        <div className="text-gray-600 text-sm px-4 py-2 transition-all duration-200 hover:text-black hover:underline">
+                            Profile
+                        </div>
+                    </Link>
             {session ? (
                 <Link href="/api/auth/signout">
                     <div className="text-gray-600 text-sm px-4 py-2 transition-all duration-200 hover:text-black hover:underline">
